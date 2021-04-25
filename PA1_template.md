@@ -5,9 +5,7 @@ date: "4/24/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 # Assignment
 
@@ -34,7 +32,8 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 Load the data (i.e. read.csv())
 Process the data into a format suitable for analysis
 
-```{r}
+
+```r
 library(dplyr)
 library(ggplot2)
 
@@ -52,7 +51,8 @@ Make a histogram of the total number of steps taken each day
 
 Calculate and report the mean and median of the total number of steps taken per day
 
-```{r}
+
+```r
 # Calculate the total number of steps taken per day
 daily_total_steps_df <- activity_df %>% 
                           group_by(date) %>%
@@ -65,14 +65,18 @@ daily_total_steps_df <- activity_df %>%
 
 # Make a histogram of the total number of steps taken each day
 qplot(total_steps, data = daily_total_steps_df, geom = "histogram", xlab = "Daily Number of Steps", ylab = "Count", binwidth = 300)
+```
 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
+
+```r
 #Calculate and report the mean and median of the total number of steps taken per day
 mean_steps <- floor(mean(daily_total_steps_df$total_steps))
 median_steps <- median(daily_total_steps_df$total_steps)
 ```
 
-The mean number of steps each day is `r mean_steps`  
-The median number of steps each day is `r median_steps`
+The mean number of steps each day is 9354  
+The median number of steps each day is 10395
 
 # What is the average daily activity pattern?
 
@@ -80,7 +84,8 @@ Make a time series plot of the 5-minute interval (x-axis) and the average number
 
 Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 avg_steps_df <- activity_df %>% 
                   group_by(interval) %>% 
                   summarize(avg_steps = mean(steps, na.rm = TRUE))
@@ -89,11 +94,15 @@ ggplot(avg_steps_df, aes(x = interval, y = avg_steps)) +
     geom_line() +
     labs(x = "Interval") +
     labs(y = "Average Number of Steps")
+```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+
+```r
 # Find the 5-minute interval contains the maximum number of steps.
 max_avg_steps <- avg_steps_df$interval[which.max(avg_steps_df$avg_steps)]
 ```
-The interval with the most average steps each day is : `r max_avg_steps`
+The interval with the most average steps each day is : 835
 
 # Imputing missing values
 
@@ -107,13 +116,15 @@ Create a new dataset that is equal to the original dataset but with the missing 
 
 Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.
 
-```{r}
+
+```r
 # Find the total number of rows with NAs
 num_missing_rows <- sum(is.na(activity_df$steps))
 ```
-The total number of rows with NAs is : `r num_missing_rows`
+The total number of rows with NAs is : 2304
 
-```{r}
+
+```r
 # Create a new dataset that is equal to the original dataset but with 
 # the missing data filled in.
 copy_activity_df<-data.frame(activity_df)
@@ -132,13 +143,17 @@ copy_daily_total_steps_df <- copy_activity_df %>%
 
 # Make a histogram of the total number of steps taken each day.
 qplot(total_steps, data = copy_daily_total_steps_df, geom = "histogram", xlab = "Daily Number of Steps", ylab = "Count", binwidth = 300)
+```
 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+
+```r
 #Calculate and report the mean and median of the total number of steps taken per day
 copy_mean_steps <- as.integer(mean(copy_daily_total_steps_df$total_steps))
 copy_median_steps <- as.integer(median(copy_daily_total_steps_df$total_steps))
 ```
-The mean number of steps each day is `r copy_mean_steps`  
-The median number of steps each day is `r copy_median_steps`
+The mean number of steps each day is 10766  
+The median number of steps each day is 10766
 
 Do these values differ from the estimates from the first part of the assignment?  
 __Both mean and median have increased.__
@@ -155,7 +170,8 @@ Create a new factor variable in the dataset with two levels – “weekday” an
 
 Make a panel plot containing a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-```{r}
+
+```r
 # Create a new factor variable in the dataset with two levels – “weekday” 
 # and “weekend”.
 copy_activity_df$weekday <- factor(ifelse(grepl("S(at|un)", weekdays(copy_activity_df$date, abbreviate=TRUE)), "WEEKEND", "WEEKDAY"))
@@ -172,3 +188,5 @@ ggplot(copy_avg_steps_df, aes(x = interval, y = avg_steps)) + geom_line() +
          labs(x = "Interval") +
          labs(y = "Average Number of Steps")
 ```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
